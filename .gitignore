@@ -1,0 +1,41 @@
+/Back/node_modules
+/Back/.env
+
+/front
+# Node
+front/node_modules/
+front/npm-debug.log
+front/yarn-error.log
+front/package-lock.json
+front/yarn.lock
+
+# Angular
+front/dist/
+front/out-tsc/
+front/.angular/
+
+# IDEs
+front/.vscode/
+front/.idea/
+front/*.sublime-project
+front/*.sublime-workspace
+
+# Sistema operativo
+front/.DS_Store
+front/Thumbs.db
+
+# Env
+front/.env
+front/.env.*  # Por si manejas diferentes entornos como .env.prod, .env.local, etc.
+
+# Compilación y testing
+front/coverage/
+front/test-output/
+
+# Otros
+front/tmp/
+front/temp/
+front/*.log
+
+# Optional: si usas Firebase, evitar subir las credenciales locales
+front/firebase-debug.log
