@@ -1,7 +1,6 @@
 /Back/node_modules
 /Back/.env
 
-/front
 # Node
 front/node_modules/
 front/npm-debug.log
