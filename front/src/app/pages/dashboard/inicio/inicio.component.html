@@ -1,4 +1,3 @@
-<!-- dashboard.component.html -->
 <div class="dashboard-home">
   <header class="user-header">
     <h1>Bienvenido, {{userName}}</h1>
@@ -6,89 +5,14 @@
   </header>
 
   <div class="metrics-grid">
-    <!-- Tarjeta de Apuestas Hechas -->
-    <div class="metric-card">
-      <div class="metric-content">
-        <div class="metric-icon">🎯</div>
-        <div class="metric-info">
-          <h3>Apuestas Hechas</h3>
-          <p class="metric-value">{{betsPlaced}}</p>
-          <p class="metric-change" [class.positive]="betsChange >= 0" [class.negative]="betsChange < 0">
-            {{betsChange >= 0 ? '+' : ''}}{{betsChange}}% vs último mes
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tarjeta de Apuestas Seguidas -->
-    <div class="metric-card">
-      <div class="metric-content">
-        <div class="metric-icon">👥</div>
-        <div class="metric-info">
-          <h3>Apuestas Seguidas</h3>
-          <p class="metric-value">{{betsFollowed}}</p>
-          <p class="metric-change" [class.positive]="followedChange >= 0" [class.negative]="followedChange < 0">
-            {{followedChange >= 0 ? '+' : ''}}{{followedChange}}% vs último mes
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tarjeta de Apuestas Creadas -->
-    <div class="metric-card">
-      <div class="metric-content">
-        <div class="metric-icon">✨</div>
-        <div class="metric-info">
-          <h3>Apuestas Creadas</h3>
-          <p class="metric-value">{{betsCreated}}</p>
-          <p class="metric-change" [class.positive]="createdChange >= 0" [class.negative]="createdChange < 0">
-            {{createdChange >= 0 ? '+' : ''}}{{createdChange}}% vs último mes
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tarjeta de Tasa de Aciertos -->
-    <div class="metric-card">
-      <div class="metric-content">
-        <div class="metric-icon">📊</div>
-        <div class="metric-info">
-          <h3>Tasa de Aciertos</h3>
-          <p class="metric-value">{{hitRate}}%</p>
-          <p class="metric-change" [class.positive]="hitRateChange >= 0" [class.negative]="hitRateChange < 0">
-            {{hitRateChange >= 0 ? '+' : ''}}{{hitRateChange}}pts vs último mes
-          </p>
-        </div>
-      </div>
-    </div>
+    <app-metric-card icon="🎯" title="Apuestas Hechas" [value]="betsPlaced" [change]="betsChange" unit="%"></app-metric-card>
+    <app-metric-card icon="👥" title="Apuestas Seguidas" [value]="betsFollowed" [change]="followedChange" unit="%"></app-metric-card>
+    <app-metric-card icon="✨" title="Apuestas Creadas" [value]="betsCreated" [change]="createdChange" unit="%"></app-metric-card>
+    <app-metric-card icon="📊" title="Tasa de Aciertos" [value]="hitRate" [change]="hitRateChange" unit="pts"></app-metric-card>
   </div>
 
   <div class="content-grid">
-    <!-- Gráfico de desempeño -->
-    <div class="chart-card">
-      <h3>Desempeño últimos 30 días</h3>
-      <div class="chart-container">
-        <canvas #performanceChart></canvas>
-      </div>
-    </div>
-
-    <!-- Últimas apuestas -->
-    <div class="recent-bets-card">
-      <h3>Últimas 5 apuestas</h3>
-      <div class="bets-list">
-        <div class="bet-item" *ngFor="let bet of recentBets">
-          <div class="bet-info">
-            <span class="bet-title">{{bet.title}}</span>
-            <span class="bet-date">{{bet.date | date:'shortDate'}}</span>
-          </div>
-          <div class="bet-result" [class.won]="bet.result === 'won'" [class.lost]="bet.result === 'lost'" [class.pending]="bet.result === 'pending'">
-            {{bet.result === 'won' ? 'Ganada' : bet.result === 'lost' ? 'Perdida' : 'Pendiente'}}
-          </div>
-          <div class="bet-amount">{{bet.amount}}</div>
-        </div>
-      </div>
-      <button class="see-all-btn">Ver todas las apuestas</button>
-    </div>
+    <app-performance-chart></app-performance-chart>
+    <app-recent-bets [recentBets]="recentBets"></app-recent-bets>
   </div>
 </div>
-

@@ -1,1 +1,38 @@
-<p>usuarios works!</p>
+<div class="users-container">
+  <div class="users-header">
+    <h2>Gestión de Usuarios</h2>
+    <button class="create-btn" (click)="createUser()">
+      <span>+</span> Nuevo Usuario
+    </button>
+  </div>
+
+  <div class="users-content">
+    <app-user-list 
+      [users]="users" 
+      (select)="selectUser($event)"
+      (edit)="editUser($event)"
+      (delete)="deleteUser($event)">
+    </app-user-list>
+
+    <!-- <app-user-detail 
+      *ngIf="selectedUser" 
+      [user]="selectedUser"
+      (edit)="editUser(selectedUser)">
+    </app-user-detail> -->
+    
+  </div>
+
+  <!-- Modal Overlay -->
+  <div class="modal-overlay" *ngIf="showUserForm" (click)="showUserForm = false">
+  </div>
+
+  <!-- Formulario Modal -->
+  <div class="user-form-modal" *ngIf="showUserForm" [class.show]="showUserForm">
+    <app-user-form 
+      [user]="selectedUser"
+      [isEditing]="isEditing"
+      (save)="saveUser($event)"
+      (cancel)="showUserForm = false">
+    </app-user-form>
+  </div>
+</div>

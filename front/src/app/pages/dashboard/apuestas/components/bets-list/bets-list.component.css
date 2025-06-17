@@ -1,0 +1,199 @@
+.bets-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.bets-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.bets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.bet-card {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.bet-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.bet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.bet-header .date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bet-header mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.match-info {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  margin: 8px 0;
+}
+
+.team {
+  font-weight: 500;
+  font-size: 1.1rem;
+  padding: 8px;
+}
+
+.team.home {
+  color: #3f51b5;
+  text-align: right;
+}
+
+.team.away {
+  color: #f44336;
+  text-align: left;
+}
+
+.vs {
+  font-size: 0.8rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.forecast-details {
+  display: flex;
+  justify-content: space-between;
+  background: #f5f7fa;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.forecast-details > div {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.forecast-details mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #666;
+}
+
+.odds {
+  font-weight: 700;
+  color: #4caf50;
+}
+
+.forecaster-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.forecaster-info .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.forecaster-details {
+  flex: 1;
+}
+
+.forecaster-details .name {
+  font-weight: 500;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.forecaster-details .stats {
+  display: flex;
+  gap: 12px;
+}
+
+.forecaster-details .stat {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.forecaster-details .stat mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.forecaster-details .stat.success {
+  color: #4caf50;
+}
+
+.price-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price-actions .price {
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.price-actions .actions {
+  display: flex;
+  gap: 4px;
+}
+
+.no-bets {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  grid-column: 1 / -1;
+}
+
+.no-bets mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  color: #ddd;
+}
+
+.no-bets h3 {
+  margin: 8px 0;
+  font-size: 1.2rem;
+  color: #444;
+}
+
+.no-bets p {
+  margin: 0;
+  font-size: 0.9rem;
+}

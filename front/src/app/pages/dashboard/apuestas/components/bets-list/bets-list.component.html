@@ -1,0 +1,89 @@
+<div class="bets-container">
+  <div class="bets-header">
+    <h2>Apuestas Disponibles</h2>
+    <button mat-raised-button color="primary" (click)="openAddBetDialog()">
+      <mat-icon>add</mat-icon> Nueva Apuesta
+    </button>
+  </div>
+
+  <div class="bets-grid">
+    @for (bet of filteredBets; track bet.id) {
+      <mat-card class="bet-card">
+        <!-- Encabezado de la apuesta -->
+        <div class="bet-header">
+          <span class="league">{{ bet.match.league }}</span>
+          <span class="date">
+            <mat-icon>event</mat-icon>
+            {{ bet.match.date | date:'dd MMM yyyy' }}
+            <mat-icon>schedule</mat-icon>
+            {{ bet.match.date | date:'HH:mm' }}
+          </span>
+        </div>
+
+        <!-- Información del partido -->
+        <div class="match-info">
+          <div class="team home">
+            <span>{{ bet.match.homeTeam }}</span>
+          </div>
+          <div class="vs">VS</div>
+          <div class="team away">
+            <span>{{ bet.match.awayTeam }}</span>
+          </div>
+        </div>
+
+        <!-- Detalles del pronóstico -->
+        <div class="forecast-details">
+          <div class="forecast-type">
+            <mat-icon>analytics</mat-icon>
+            <span>{{ bet.forecast.type }}</span>
+          </div>
+          <div class="selection">
+            <mat-icon>arrow_forward</mat-icon>
+            <span>{{ bet.forecast.selection }}</span>
+          </div>
+          <div class="odds">
+            <mat-icon>attach_money</mat-icon>
+            <span>{{ bet.forecast.odds | number:'1.2-2' }}</span>
+          </div>
+        </div>
+
+        <!-- Información del pronosticador -->
+        <div class="forecaster-info">
+          <img [src]="bet.forecaster.avatar || 'assets/default-avatar.png'" class="avatar">
+          <div class="forecaster-details">
+            <span class="name">{{ bet.forecaster.name }}</span>
+            <div class="stats">
+              <span class="stat success">
+                <mat-icon>trending_up</mat-icon>
+                {{ bet.forecaster.stats.successRate | percent:'1.0-1' }}
+              </span>
+              <span class="stat followers">
+                <mat-icon>people</mat-icon>
+                {{ bet.followers || 0 }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Precio y acciones -->
+        <div class="price-actions">
+          <span class="price">{{ bet.price | currency }}</span>
+          <div class="actions">
+            <button mat-icon-button color="primary" (click)="openEditBetDialog(bet); $event.stopPropagation()">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteBet(bet.id); $event.stopPropagation()">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      </mat-card>
+    } @empty {
+      <div class="no-bets">
+        <mat-icon>sports_soccer</mat-icon>
+        <h3>No hay apuestas disponibles</h3>
+        <p>Crea una nueva apuesta para comenzar</p>
+      </div>
+    }
+  </div>
+</div>

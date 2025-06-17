@@ -1,0 +1,268 @@
+@use '@angular/material' as mat;
+
+.user-list-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 24px;
+  background: #fafafa;
+  border-radius: 12px;
+  width: 100%;
+
+  .list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    .list-title {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #2c3e50;
+      margin: 0;
+    }
+
+    .action-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-radius: 1rem;
+
+      .search-field {
+        width: 280px;
+
+        .mat-form-field-wrapper {
+          padding-bottom: 0;
+        }
+      }
+
+      .filter-btn {
+        border-radius: 20px;
+        padding: 0 16px;
+      }
+    }
+  }
+
+  .table-wrapper {
+    flex: 1;
+    overflow: hidden;
+    border-radius: 8px;
+    background: white;
+
+    .user-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+
+      .table-header {
+        background: #f5f7fa;
+        color: #4a5568;
+        font-weight: 500;
+        font-size: 0.875rem;
+        padding: 16px 24px;
+
+        &:first-child {
+          border-radius: 8px 0 0 0;
+        }
+
+        &:last-child {
+          border-radius: 0 8px 0 0;
+        }
+      }
+
+      .table-cell {
+        padding: 16px 24px;
+        border-bottom: 1px solid #edf2f7;
+      }
+
+      .avatar-cell {
+        width: 60px;
+
+        .avatar-wrapper {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          overflow: hidden;
+
+          .user-avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+      }
+
+      .name-cell {
+        cursor: pointer;
+        min-width: 240px;
+
+        .user-info {
+          display: flex;
+          flex-direction: column;
+
+          .user-name {
+            font-weight: 500;
+            color: #2d3748;
+          }
+
+          .user-email {
+            font-size: 0.875rem;
+            color: #718096;
+          }
+        }
+      }
+
+      .status-indicator {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-transform: capitalize;
+
+        &.active {
+          background: rgba(72, 187, 120, 0.1);
+          color: #48bb78;
+        }
+
+        &.inactive {
+          background: rgba(246, 173, 85, 0.1);
+          color: #f6ad55;
+        }
+
+        &.suspended {
+          background: rgba(245, 101, 101, 0.1);
+          color: #f56565;
+        }
+      }
+
+      .date-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #4a5568;
+
+        .date-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+          color: #a0aec0;
+        }
+      }
+
+      .bets-count {
+        display: flex;
+        justify-content: center;
+
+        .bets-number {
+          background: #f5f7fa;
+          border-radius: 12px;
+          padding: 4px 12px;
+          font-weight: 500;
+          color: #4a5568;
+        }
+      }
+
+      .actions-cell {
+        width: 120px;
+
+        .action-buttons {
+          display: flex;
+          gap: 8px;
+
+          button {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+
+            mat-icon {
+              font-size: 18px;
+            }
+          }
+
+          .edit-btn {
+            color: #4299e1;
+            background: rgba(66, 153, 225, 0.1);
+          }
+
+          .delete-btn {
+            color: #f56565;
+            background: rgba(245, 101, 101, 0.1);
+          }
+        }
+      }
+
+      .user-row {
+        transition: background 0.2s ease;
+
+        &:hover {
+          background: #f8fafc;
+        }
+
+        &.selected {
+          background: #ebf8ff;
+        }
+      }
+
+      .empty-row {
+        .empty-cell {
+          padding: 80px 24px;
+          text-align: center;
+
+          .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 400px;
+            margin: 0 auto;
+            color: #a0aec0;
+
+            .empty-icon {
+              font-size: 64px;
+              width: 64px;
+              height: 64px;
+              margin-bottom: 16px;
+            }
+
+            h3 {
+              font-size: 1.25rem;
+              font-weight: 500;
+              margin: 0 0 8px 0;
+              color: #4a5568;
+            }
+
+            p {
+              margin: 0;
+              font-size: 0.875rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .custom-paginator {
+    margin-top: 16px;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+}
+.payment-info, .payment-details {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.no-payment {
+  color: #999;
+  font-style: italic;
+}
+
+.payment-amount {
+  margin-left: 16px;
+  color: #4CAF50; /* Verde para montos */
+}

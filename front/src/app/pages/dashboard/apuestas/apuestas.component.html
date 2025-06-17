@@ -1,1 +1,314 @@
-<p>apuestas works!</p>
+<!--
+<div class="bets-container">
+  <div class="bets-header">
+    <h2>Apuestas Disponibles</h2>
+    <button mat-raised-button color="primary" (click)="openAddBetDialog()">
+        <mat-icon>add</mat-icon> Nueva Apuesta
+    </button>
+    <div class="filters">
+      <mat-form-field appearance="outline">
+        <mat-label>Liga</mat-label>
+        <mat-select [(value)]="selectedLeague" (selectionChange)="filterBets()">
+          <mat-option value="all">Todas las Ligas</mat-option>
+          <mat-option *ngFor="let league of leagues" [value]="league">
+            {{ league }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Tipo de Apuesta</mat-label>
+        <mat-select [(value)]="selectedType" (selectionChange)="filterBets()">
+          <mat-option value="all">Todos los Tipos</mat-option>
+          <mat-option value="1X2">1X2</mat-option>
+          <mat-option value="Over/Under">Over/Under</mat-option>
+          <mat-option value="Handicap">Handicap</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="bets-grid">
+    <mat-card *ngFor="let bet of filteredBets" class="bet-card" (click)="openBetDetails(bet)">
+      <div class="match-info">
+        <div class="teams">
+          <span class="team home">{{ bet.match.homeTeam }}</span>
+          <span class="vs">vs</span>
+          <span class="team away">{{ bet.match.awayTeam }}</span>
+        </div>
+        <div class="league">{{ bet.match.league }}</div>
+        <div class="date">
+          <mat-icon>schedule</mat-icon>
+          {{ bet.match.date | date:'dd MMM HH:mm' }}
+        </div>
+      </div>
+
+      <div class="forecast-info">
+        <div class="forecast-type">{{ getForecastType(bet.forecast.type) }}</div>
+        <div class="selection">{{ bet.forecast.selection }}</div>
+        <div class="odds">{{ bet.forecast.odds | number:'1.2-2' }}</div>
+      </div>
+
+      <div class="forecaster-info">
+        <img [src]="bet.forecaster.avatar || 'assets/default-avatar.png'" class="avatar">
+        <span class="name">{{ bet.forecaster.name }}</span>
+        <span class="success-rate">
+          <mat-icon>trending_up</mat-icon>
+          {{ bet.forecaster.stats.successRate | percent:'1.0-1' }}
+        </span>
+      </div>
+
+      <div class="price-info">
+        <span class="price">{{ bet.price | currency }}</span>
+        <button mat-flat-button color="primary" class="buy-btn" (click)="$event.stopPropagation(); buyBet(bet)">
+          Comprar
+        </button>
+      </div>
+          <div class="bet-actions">
+      <button mat-icon-button color="primary" (click)="openEditBetDialog(bet); $event.stopPropagation()">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button color="warn" (click)="deleteBet(bet.id); $event.stopPropagation()">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+    </mat-card>
+  </div>
+
+  <div *ngIf="filteredBets.length === 0" class="no-bets">
+    <mat-icon>sports_soccer</mat-icon>
+    <h3>No hay apuestas disponibles</h3>
+    <p>Intenta ajustar los filtros o vuelve más tarde</p>
+  </div>
+</div>
+
+
+<div class="modal-overlay" *ngIf="selectedBet" (click)="closeModal()">
+</div>
+
+<div class="bet-details-modal" *ngIf="selectedBet" [class.show]="selectedBet">
+  <div class="modal-header">
+    <h2>Detalles de la Apuesta</h2>
+    <button mat-icon-button (click)="closeModal()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="modal-content">
+
+    <div class="section match-section">
+      <h3>Información del Partido</h3>
+      <div class="match-teams">
+        <div class="team home">
+          <span>{{ selectedBet.match.homeTeam }}</span>
+          <div class="logo"></div>
+        </div>
+        <div class="vs">vs</div>
+        <div class="team away">
+          <div class="logo"></div>
+          <span>{{ selectedBet.match.awayTeam }}</span>
+        </div>
+      </div>
+      
+      <div class="match-meta">
+        <div class="league">
+          <mat-icon>emoji_events</mat-icon>
+          {{ selectedBet.match.league }}
+        </div>
+        <div class="date">
+          <mat-icon>schedule</mat-icon>
+          {{ selectedBet.match.date | date:'fullDate' }} a las 
+          {{ selectedBet.match.date | date:'shortTime' }}
+        </div>
+      </div>
+    </div>
+
+
+    <div class="section history-section">
+      <h3>Historial de Enfrentamientos</h3>
+      
+      <div class="h2h-stats">
+        <div class="stat">
+          <span class="value">{{ selectedBet.match.history.h2h.homeWins }}</span>
+          <span class="label">Victorias {{ selectedBet.match.homeTeam }}</span>
+        </div>
+        <div class="stat">
+          <span class="value">{{ selectedBet.match.history.h2h.draws }}</span>
+          <span class="label">Empates</span>
+        </div>
+        <div class="stat">
+          <span class="value">{{ selectedBet.match.history.h2h.awayWins }}</span>
+          <span class="label">Victorias {{ selectedBet.match.awayTeam }}</span>
+        </div>
+      </div>
+      
+      <div class="last-matches">
+        <h4>Últimos partidos:</h4>
+        <div class="matches-list">
+          <div *ngFor="let match of selectedBet.match.history.lastMatches" class="match">
+            <span class="teams">{{ match.teams }}</span>
+            <span class="result">{{ match.result }}</span>
+            <span class="date">{{ match.date | date:'shortDate' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="section forecaster-section">
+      <h3>Información del Pronosticador</h3>
+      
+      <div class="forecaster-header">
+        <img [src]="selectedBet.forecaster.avatar || 'assets/default-avatar.png'" class="avatar">
+        <div class="info">
+          <h4>{{ selectedBet.forecaster.name }}</h4>
+          <div class="stats">
+            <div class="stat">
+              <mat-icon>bar_chart</mat-icon>
+              {{ selectedBet.forecaster.stats.successRate | percent:'1.0-1' }} Éxito
+            </div>
+            <div class="stat">
+              <mat-icon>show_chart</mat-icon>
+              {{ selectedBet.forecaster.stats.yield | percent:'1.0-1' }} Yield
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="performance-chart">
+
+        <div class="chart-placeholder">
+          <mat-icon>insert_chart</mat-icon>
+          <p>Gráfico de rendimiento (últimas 10 apuestas)</p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="section forecast-section">
+      <h3>Detalles del Pronóstico</h3>
+      
+      <div class="forecast-details">
+        <div class="detail">
+          <span class="label">Tipo:</span>
+          <span class="value">{{ getForecastType(selectedBet.forecast.type) }}</span>
+        </div>
+        <div class="detail">
+          <span class="label">Selección:</span>
+          <span class="value">{{ selectedBet.forecast.selection }}</span>
+        </div>
+        <div class="detail">
+          <span class="label">Cuota:</span>
+          <span class="value">{{ selectedBet.forecast.odds | number:'1.2-2' }}</span>
+        </div>
+        <div class="detail">
+          <span class="label">Valor esperado:</span>
+          <span class="value">{{ calculateExpectedValue(selectedBet) | percent:'1.0-2' }}</span>
+        </div>
+      </div>
+      
+      <div class="analysis">
+        <h4>Análisis del pronosticador:</h4>
+        <p class="analysis-text">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris.
+          Vivamus hendrerit arcu sed erat molestie vehicula. Sed auctor neque eu tellus
+          rhoncus ut eleifend nibh porttitor.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-actions">
+    <button mat-flat-button (click)="closeModal()">Cerrar</button>
+    <button mat-flat-button color="primary" (click)="buyBet(selectedBet)">
+      Comprar por {{ selectedBet.price | currency }}
+    </button>
+  </div>
+</div>
+
+<h2 mat-dialog-title>{{ data.isEdit ? 'Editar Apuesta' : 'Nueva Apuesta' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="betForm" class="bet-form">
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Equipo Local</mat-label>
+        <input matInput formControlName="homeTeam" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Equipo Visitante</mat-label>
+        <input matInput formControlName="awayTeam" required>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Liga</mat-label>
+        <mat-select formControlName="league" required>
+          <mat-option *ngFor="let league of leagues" [value]="league">
+            {{ league }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha del Partido</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="matchDate" required>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Tipo de Pronóstico</mat-label>
+        <mat-select formControlName="forecastType" required (selectionChange)="updateForecastOptions()">
+          <mat-option value="1X2">1X2</mat-option>
+          <mat-option value="Over/Under">Over/Under</mat-option>
+          <mat-option value="Handicap">Handicap</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" *ngIf="showForecastSelection">
+        <mat-label>Selección</mat-label>
+        <mat-select formControlName="forecastSelection" required>
+          <mat-option *ngFor="let option of forecastOptions" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Cuota</mat-label>
+        <input matInput type="number" step="0.01" min="1" formControlName="odds" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Precio (USD)</mat-label>
+        <input matInput type="number" step="0.01" min="0" formControlName="price" required>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Pronosticador</mat-label>
+      <mat-select formControlName="forecasterId" required>
+        <mat-option *ngFor="let forecaster of forecasters" [value]="forecaster.id">
+          {{ forecaster.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancelar</button>
+  <button mat-raised-button color="primary" 
+          [disabled]="betForm.invalid" 
+          (click)="onSubmit()">
+    {{ data.isEdit ? 'Actualizar' : 'Crear' }}
+  </button>
+</mat-dialog-actions>
+-->

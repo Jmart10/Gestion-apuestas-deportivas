@@ -1,0 +1,106 @@
+.users-container {
+  padding: 1rem;
+  width: 90%;
+  margin: 0 auto;
+  position: relative;
+}
+
+.users-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  h2 {
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin: 0;
+  }
+}
+
+.create-btn {
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+
+  span {
+    font-size: 1.2rem;
+  }
+
+  &:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+  }
+}
+
+.users-content {
+  display: grid;
+  grid-template-columns: 1fr;
+
+
+}
+
+/* Estilos para el modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  backdrop-filter: blur(2px);
+}
+
+.user-form-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 101;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalFadeIn 0.3s ease-out;
+
+  .user-form-card {
+    margin: 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -40%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Ajustes para el formulario dentro del modal */
+.user-form-card {
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  mat-card-actions {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding: 16px !important;
+    margin-top: 16px;
+    border-top: 1px solid #eee;
+  }
+}

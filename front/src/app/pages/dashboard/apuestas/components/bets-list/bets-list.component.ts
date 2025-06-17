@@ -1,27 +1,23 @@
-/*
-import { Component, Input, Output, EventEmitter, Inject, OnInit } from '@angular/core';
-import { Bet } from './models/bets.model';
-import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
+import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { BetDialogComponent } from '../bet-dialog/bet-dialog,component';
+import { Bet } from '../../models/bets.model';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-apuestas',
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatIconModule,
-    MatButtonModule,
-    MatCardModule
-  ],
-  templateUrl: './apuestas.component.html',
-  styleUrl: './apuestas.component.css'
+  selector: 'app-bets-list',
+  templateUrl: './bets-list.component.html',
+  styleUrls: ['./bets-list.component.css'],
+    imports: [
+        MatIconModule,
+        MatButtonModule,
+        MatCardModule,
+        CommonModule
+    ]
 })
 export class BetsListComponent {
   bets: Bet[] = [
@@ -138,52 +134,63 @@ export class BetsListComponent {
       createdAt: new Date()
     }
   ];
-  @Output() betSelected = new EventEmitter<Bet>();
-  @Output() betPurchased = new EventEmitter<Bet>();
-
-  selectedBet: Bet | null = null;
   filteredBets: Bet[] = [];
-  leagues: string[] = ['La Liga', 'Premier League', 'Serie A', 'Bundesliga', 'Ligue 1'];
-  selectedLeague = 'all';
-  selectedType = 'all';
-
-  ngOnInit() {
-    this.filterBets();
+    ngOnInit() {
+    this.filteredBets = [...this.bets]; // Inicializa con los datos de prueba
   }
+  
+  constructor(private dialog: MatDialog) {}
 
-  filterBets() {
-    this.filteredBets = this.bets.filter(bet => {
-      const leagueMatch = this.selectedLeague === 'all' || bet.match.league === this.selectedLeague;
-      const typeMatch = this.selectedType === 'all' || bet.forecast.type === this.selectedType;
-      return leagueMatch && typeMatch;
+  openAddBetDialog(): void {
+    const dialogRef = this.dialog.open(BetDialogComponent, {
+      width: '800px',
+      data: { isEdit: false }
+    });
+
+    dialogRef.afterClosed().subscribe(newBet => {
+      if (newBet) {
+        this.bets.unshift(newBet);
+        this.filteredBets = [...this.bets];
+      }
     });
   }
 
-  openBetDetails(bet: Bet) {
-    this.selectedBet = bet;
+  openEditBetDialog(bet: Bet): void {
+    const dialogRef = this.dialog.open(BetDialogComponent, {
+      width: '800px',
+      data: { bet, isEdit: true }
+    });
+
+    dialogRef.afterClosed().subscribe(updatedBet => {
+      if (updatedBet) {
+        const index = this.bets.findIndex(b => b.id === updatedBet.id);
+        if (index !== -1) {
+          this.bets[index] = updatedBet;
+          this.filteredBets = [...this.bets];
+        }
+      }
+    });
   }
 
-  closeModal() {
-    this.selectedBet = null;
+  deleteBet(betId: string): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: { 
+        title: 'Eliminar Apuesta',
+        message: '¿Estás seguro de eliminar esta apuesta?',
+        confirmText: 'Eliminar'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.bets = this.bets.filter(bet => bet.id !== betId);
+        this.filterBets();
+      }
+    });
   }
 
-  buyBet(bet: Bet) {
-    this.betPurchased.emit(bet);
-    this.closeModal();
-  }
-
-  getForecastType(type: string): string {
-    switch(type) {
-      case '1X2': return '1X2';
-      case 'Over/Under': return 'Over/Under';
-      case 'Handicap': return 'Handicap';
-      default: return type;
-    }
-  }
-
-  calculateExpectedValue(bet: Bet): number {
-    // Lógica para calcular el valor esperado basado en estadísticas
-    return bet.forecaster.stats.successRate * (bet.forecast.odds - 1) - (1 - bet.forecaster.stats.successRate);
+  private filterBets(): void {
+    this.filteredBets = [...this.bets];
   }
 }
-*/
