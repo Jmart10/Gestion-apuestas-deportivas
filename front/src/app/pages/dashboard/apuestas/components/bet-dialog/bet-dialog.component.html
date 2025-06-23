@@ -1,68 +1,97 @@
-<h2 mat-dialog-title>{{ data.isEdit ? 'Editar Apuesta' : 'Nueva Apuesta' }}</h2>
-
 <mat-dialog-content>
   <form [formGroup]="betForm" class="bet-form">
 
-    <div class="form-row">
-      <div class="form-control">
-        <label for="homeTeam">Equipo Local</label>
-        <input id="homeTeam" type="text" formControlName="homeTeam" required />
-      </div>
+    <!-- Mostrar botón si no hay partidos -->
+    <ng-container *ngIf="bets.length === 0">
+      <p>No hay partidos agregados.</p>
+    </ng-container>
 
-      <div class="form-control">
-        <label for="awayTeam">Equipo Visitante</label>
-        <input id="awayTeam" type="text" formControlName="awayTeam" required />
+    <div formArrayName="bets">
+      <div *ngFor="let betGroup of bets.controls; let i = index" [formGroupName]="i" class="bet-section">
+        <mat-card class="match-card">
+          
+            <div class="form-control" *ngIf="data.isEdit">
+              <label>Estado</label>
+              <select formControlName="status" required>
+                <option *ngFor="let status of status " [value]="status">{{ status }}</option>
+              </select>
+            </div>
+
+
+          <div class="form-row">
+            <div class="form-control">
+              <label>Equipo Local</label>
+              <input type="text" formControlName="homeTeam" required />
+            </div>
+
+            <div class="form-control">
+              <label>Equipo Visitante</label>
+              <input type="text" formControlName="awayTeam" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-control">
+              <label>Liga</label>
+              <select formControlName="league" required>
+                <option *ngFor="let league of leagues" [value]="league">{{ league }}</option>
+              </select>
+            </div>
+
+            <div class="form-control">
+              <label>Fecha</label>
+              <input type="text" [matDatepicker]="picker" formControlName="matchDate" required />
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-control">
+              <label>Pronóstico</label>
+              <input type="text" formControlName="forecastSelection" required />
+            </div>
+
+            <div class="form-control">
+              <label>Cuota</label>
+              <input type="number" step="0.01" min="1" formControlName="odds" required />
+            </div>
+          </div>
+
+          <button mat-stroked-button color="warn" (click)="removeBet(i)">Eliminar Partido</button>
+        </mat-card>
+        <mat-divider></mat-divider>
       </div>
     </div>
 
-    <div class="form-row">
-      <div class="form-control">
-        <label for="league">Liga</label>
-        <select id="league" formControlName="league" required>
-          <option *ngFor="let league of leagues" [value]="league">
-            {{ league }}
-          </option>
-        </select>
-      </div>
+    <button mat-flat-button color="primary" type="button" (click)="addBet()">+ Agregar otro partido</button>
 
-      <div class="form-control">
-        <label for="matchDate">Fecha</label>
-        <input id="matchDate" type="text" [matDatepicker]="picker" formControlName="matchDate" required />
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-control">
-        <label for="odds">Cuota</label>
-        <input id="odds" type="number" step="0.01" min="1" formControlName="odds" required />
-      </div>
-
-      <div class="form-control">
-        <label for="price">Precio (USD)</label>
-        <input id="price" type="number" step="0.01" min="0" formControlName="price" required />
-      </div>
+    <div class="form-control">
+      <label>Precio Total (USD)</label>
+      <input type="number" step="0.01" min="0" formControlName="price" required />
     </div>
 
     <div class="form-control">
-      <label for="forecasterId">Pronosticador</label>
-      <select id="forecasterId" formControlName="forecasterId" required>
+      <label>Pronosticador</label>
+      <select formControlName="forecasterId" required>
         <option *ngFor="let forecaster of forecasters" [value]="forecaster.id">
           {{ forecaster.name }}
         </option>
       </select>
     </div>
-
   </form>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancelar</button>
-  <button mat-raised-button color="primary" 
-          [disabled]="betForm.invalid" 
-          (click)="onSubmit()">
+
+  <button
+    mat-raised-button
+    color="primary"
+    [disabled]="betForm.invalid || bets.length === 0"
+    (click)="onSubmit()"
+  >
     {{ data.isEdit ? 'Actualizar' : 'Crear' }}
   </button>
-
 </mat-dialog-actions>
+

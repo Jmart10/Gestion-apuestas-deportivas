@@ -1,3 +1,4 @@
+const generateToken = require('../helpers/token.js');
 const usuario = require('../models/users.js');
 
 exports.createUser = async (req, res) => {
@@ -112,15 +113,16 @@ exports.loginUser = async (req, res) => {
     if (user.password !== password) {
       return res.status(401).json({ message: 'Correo o contraseña incorrectos' });
     }
-
+    const token = generateToken(user);
     // Éxito
     res.status(200).json({
       message: 'Login exitoso',
       user: {
         id: user._id,
         email: user.email,
-        rol: user.rol
-      }
+        rol: user.rol, 
+      },
+      token: token
     });
 
   } catch (error) {

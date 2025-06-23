@@ -1,10 +1,12 @@
 export interface Bet {
-  id: string;
-  match: {
+  id?: string;
+  _id?: string;
+  matches: {
     homeTeam: string;
     awayTeam: string;
     date: Date;
     league: string;
+    status?: string; // 'winning' | 'losing' | 'pending' | 'cancelled';
     history: {
       lastMatches: {
         teams: string;
@@ -17,12 +19,13 @@ export interface Bet {
         draws: number;
       };
     };
-  };
-  forecast: {
-    type: '1X2' | 'Over/Under' | 'Handicap';
-    selection: string;
-    odds: number;
-  };
+    forecast: {
+      type: '1X2' | 'Over/Under' | 'Handicap';
+      selection: string;
+      odds: number;
+    };
+  }[]; // 👈 Array de partidos
+
   forecaster: {
     id: string;
     name: string;
@@ -36,4 +39,5 @@ export interface Bet {
   price: number;
   createdAt: Date;
   followers?: number;
+
 }

@@ -5,9 +5,6 @@
   padding-top: 1rem;
 }
 
-.form-row {
-  border: 1px dashed red; /* Solo para depurar */
-}
 
 .form-control {
   display: flex;
