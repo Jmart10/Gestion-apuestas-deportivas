@@ -1,9 +1,9 @@
 ## Agregar estados de las apuestas
- - Ganada, perdida, pendiente, anulada, que tenga como valor por defecto pendiente
- - Agregar las opciones de la apuesta
+ - Ganada, perdida, pendiente, anulada, que tenga como valor por defecto pendiente OK
+ - Agregar las opciones de la apuesta OK
 
 ## Mejorar los filtros de la aplicación
-- Conocer el historial del pronosticador
+- Conocer el historial del pronosticador OK
 
 ## Back
 - Midlewares, implementar en más rutas y probar.

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Bet } from '../../pages/dashboard/apuestas/models/bets.model';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,9 @@ export class BetsService {
   constructor(private http: HttpClient) {}
 
   getBets(userId: string): Observable<Bet[]> {
-    return this.http.get<Bet[]>(`${this.baseUrl}?userId=${userId}`);
+    return this.http.get<Bet[]>(`${this.baseUrl}?userId=${userId}`).pipe(
+      map(bets => bets.map(b => ({ ...b, id: b.id || (b as any)._id })))
+    );
   }
 
   createBet(bet: Bet): Observable<Bet> {

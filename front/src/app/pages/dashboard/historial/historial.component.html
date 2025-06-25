@@ -1,76 +1,66 @@
-<div class="history-container">
-  <div class="history-header">
-    <h2>Historial de Apuestas</h2>
-    <div class="filters">
-      <mat-form-field appearance="outline">
-        <mat-label>Resultado</mat-label>
-        <mat-select [(value)]="selectedResult" (selectionChange)="filterBets()">
-          <mat-option value="all">Todos</mat-option>
-          <mat-option value="won">Ganadas</mat-option>
-          <mat-option value="lost">Perdidas</mat-option>
-          <mat-option value="pending">Pendientes</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Ordenar por</mat-label>
-        <mat-select [(value)]="sortBy" (selectionChange)="sortBets()">
-          <mat-option value="newest">Más recientes</mat-option>
-          <mat-option value="oldest">Más antiguas</mat-option>
-          <mat-option value="highest-odds">Mayor cuota</mat-option>
-          <mat-option value="most-followers">Más seguidores</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+<form [formGroup]="filtersForm" (ngSubmit)="applyFilters()" class="filters-container">
+  <!-- Pronosticador -->
+  <div class="custom-field">
+    <label for="forecaster">Pronosticador</label>
+    <select id="forecaster" formControlName="forecaster">
+      <option value="">Todos</option>
+      <option *ngFor="let f of uniqueForecasters" [value]="f">{{ f }}</option>
+    </select>
   </div>
 
-  <div class="history-list">
-    <div *ngFor="let bet of filteredBets" class="bet-card" [class.won]="bet.forecast.result === 'won'" 
-         [class.lost]="bet.forecast.result === 'lost'" [class.pending]="bet.forecast.result === 'pending'">
-      
-      <div class="match-info">
-        <div class="teams">
-          <span class="team home">{{ bet.match.homeTeam }}</span>
-          <span class="vs">vs</span>
-          <span class="team away">{{ bet.match.awayTeam }}</span>
-        </div>
-        <div class="meta">
-          <span class="league">{{ bet.match.league }}</span>
-          <span class="date">{{ bet.match.date | date:'dd MMM yyyy' }}</span>
-          <span class="score" *ngIf="bet.forecast.result !== 'pending'">{{ bet.match.score }}</span>
-        </div>
-      </div>
-
-      <div class="forecast-info">
-        <div class="type-badge">{{ bet.forecast.type }}</div>
-        <div class="selection">{{ bet.forecast.selection }}</div>
-        <div class="odds">{{ bet.forecast.odds | number:'1.2-2' }}</div>
-        <div class="result-badge" [class.won]="bet.forecast.result === 'won'" 
-             [class.lost]="bet.forecast.result === 'lost'">
-          {{ getResultText(bet.forecast.result) }}
-        </div>
-      </div>
-
-      <div class="stats-info">
-        <div class="forecaster">
-          <img [src]="bet.forecaster.avatar || 'assets/default-avatar.png'" class="avatar">
-          <span class="name">{{ bet.forecaster.name }}</span>
-        </div>
-        <div class="followers">
-          <mat-icon>people</mat-icon>
-          {{ bet.followers }}
-        </div>
-        <div class="posted-date">
-          <mat-icon>schedule</mat-icon>
-          {{ bet.createdAt | date:'dd/MM/yy' }}
-        </div>
-      </div>
-    </div>
-
-    <div *ngIf="filteredBets.length === 0" class="empty-state">
-      <mat-icon>sports</mat-icon>
-      <h3>No hay apuestas en el historial</h3>
-      <p>No se encontraron apuestas con los filtros seleccionados</p>
-    </div>
+  <!-- Estado -->
+  <div class="custom-field">
+    <label for="status">Estado</label>
+    <select id="status" formControlName="status">
+      <option value="">Todos</option>
+      <option *ngFor="let estado of ['Ganada', 'Perdida', 'Pendiente', 'Cancelada', 'Anulada']" [value]="estado">{{ estado }}</option>
+    </select>
   </div>
+
+  <!-- Ordenar -->
+  <div class="custom-field">
+    <label for="sort">Ordenar por</label>
+    <select id="sort" formControlName="sort">
+      <option value="">Ninguno</option>
+      <option value="price">Precio</option>
+      <option value="odds">Cuota</option>
+      <option value="date">Fecha</option>
+    </select>
+  </div>
+
+  <!-- Botón -->
+  <button type="submit" class="custom-btn">Aplicar Filtros</button>
+</form>
+
+
+
+
+<div class="table-container">
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Pronosticador</th>
+        <th># Partidos</th>
+        <th>Estado</th>
+        <th>Cuota</th>
+        <th>Precio</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let bet of filteredBets" (click)="openDetails(bet)" class="clickable-row">
+
+        <td>{{ bet.createdAt | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ bet.forecaster.name }}</td>
+        <td>{{ bet.matches.length }}</td>
+        <td>
+          <span [ngClass]="getStatusClass(getBetStatus(bet))" class="status-badge">
+            {{ getBetStatus(bet) }}
+          </span>
+        </td>
+        <td>{{ averageOdds(bet) | number:'1.2-2' }}</td>
+        <td>{{ bet.price | currency:'USD' }}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>

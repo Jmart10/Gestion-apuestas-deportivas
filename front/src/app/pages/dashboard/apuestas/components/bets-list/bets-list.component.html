@@ -7,8 +7,7 @@
   </div>
 
 <div class="bets-grid">
-  <mat-card class="bet-card" *ngFor="let bet of filteredBets">
-    <!-- Ahora sí puedes acceder a bet.matches -->
+  <mat-card class="bet-card" *ngFor="let bet of pendingBets">
     <div *ngFor="let match of bet.matches" class="match-block">
       <div class="bet-header">
         <span class="league">{{ match.league }}</span>
@@ -28,7 +27,7 @@
 
       <div class="forecast-details" *ngIf="match.forecast">
         <div class="forecast-type">
-          {{ match.status }}
+          {{ bet.status }}
         </div>
         <div class="selection">
           <mat-icon>arrow_forward</mat-icon>
@@ -68,7 +67,7 @@
         <button mat-icon-button color="primary" (click)="openEditBetDialog(bet)">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button color="warn" (click)="deleteBet(bet.id!)">
+        <button mat-icon-button color="warn" (click)="deleteBet(bet.id! )">
           <mat-icon>delete</mat-icon>
         </button>
       </div>

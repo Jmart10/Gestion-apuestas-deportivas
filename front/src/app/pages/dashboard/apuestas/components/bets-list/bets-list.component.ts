@@ -36,9 +36,11 @@ export class BetsListComponent implements OnInit {
 
   loadBets() {
     this.betsService.getBets(this.userId).subscribe(bets => {
-      console.log('Bets loaded:', bets);
-      this.bets = bets;
-      this.filteredBets = [...bets];
+      this.bets = bets.map(b => ({
+        ...b,
+        id: b.id || (b as any)._id // Normaliza el id si solo llega _id
+      }));
+      this.filteredBets = [...this.bets];
     });
   }
 
@@ -98,5 +100,8 @@ export class BetsListComponent implements OnInit {
         });
       }
     });
+  }
+  get pendingBets(): Bet[] {
+    return this.filteredBets.filter(bet => bet.status === 'pendiente');
   }
 }

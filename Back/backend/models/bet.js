@@ -5,7 +5,7 @@ const matchSchema = new mongoose.Schema({
   awayTeam: String,
   date: Date,
   league: String,
-  status: String,
+
   history: {
     lastMatches: [
       {
@@ -41,6 +41,7 @@ const betSchema = new mongoose.Schema({
     }
   },
   price: Number,
+  status: String,
   createdAt: { type: Date, default: Date.now }
 });
 

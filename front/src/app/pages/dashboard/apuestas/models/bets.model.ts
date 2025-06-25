@@ -1,12 +1,12 @@
 export interface Bet {
   id?: string;
   _id?: string;
+
   matches: {
     homeTeam: string;
     awayTeam: string;
     date: Date;
     league: string;
-    status?: string; // 'winning' | 'losing' | 'pending' | 'cancelled';
     history: {
       lastMatches: {
         teams: string;
@@ -37,6 +37,7 @@ export interface Bet {
     };
   };
   price: number;
+  status?: string;
   createdAt: Date;
   followers?: number;
 

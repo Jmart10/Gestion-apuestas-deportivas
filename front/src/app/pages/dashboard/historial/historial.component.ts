@@ -1,9 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BetHistory } from './models/bet-history.model';
+import { Bet } from '../../dashboard/apuestas/models/bets.model';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDialogModule } from '@angular/material/dialog';
+import { BetDetailsDialogComponent } from './components/bet-details-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTableModule } from '@angular/material/table';
+import { BetsService } from '../../../core/services/bets.service';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-historial',
@@ -11,149 +19,114 @@ import { MatIconModule } from '@angular/material/icon';
     CommonModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatIconModule
+    MatIconModule,
+    MatDialogModule,
+    MatTableModule,
+    ReactiveFormsModule
   ],
   templateUrl: './historial.component.html',
-  styleUrl: './historial.component.css'
+  styleUrl: './historial.component.css',
+  encapsulation: ViewEncapsulation.None,
+  standalone: true
 })
 export class BetHistoryComponent {
-  bets: BetHistory[] = [
-    {
-      id: '1',
-      match: {
-        homeTeam: 'Real Madrid',
-        awayTeam: 'Barcelona',
-        score: '2-1',
-        date: new Date('2023-11-05'),
-        league: 'La Liga'
-      },
-      forecast: {
-        type: '1X2',
-        selection: '1 (Local)',
-        odds: 2.10,
-        result: 'won'
-      },
-      forecaster: {
-        id: '101',
-        name: 'Juan Pérez',
-        avatar: 'assets/avatars/juan-perez.jpg'
-      },
-      followers: 42,
-      createdAt: new Date('2023-11-04'),
-      settledAt: new Date('2023-11-06')
-    },
-    {
-      id: '2',
-      match: {
-        homeTeam: 'Manchester City',
-        awayTeam: 'Liverpool',
-        score: '1-1',
-        date: new Date('2023-11-12'),
-        league: 'Premier League'
-      },
-      forecast: {
-        type: 'Over/Under',
-        selection: 'Under 2.5',
-        odds: 1.85,
-        result: 'lost'
-      },
-      forecaster: {
-        id: '102',
-        name: 'Ana Gómez',
-        avatar: 'assets/avatars/ana-gomez.jpg'
-      },
-      followers: 28,
-      createdAt: new Date('2023-11-10'),
-      settledAt: new Date('2023-11-13')
-    },
-    {
-      id: '3',
-      match: {
-        homeTeam: 'Bayern Munich',
-        awayTeam: 'Dortmund',
-        score: '3-2',
-        date: new Date('2023-11-18'),
-        league: 'Bundesliga'
-      },
-      forecast: {
-        type: 'Handicap',
-        selection: 'Bayern -1.5',
-        odds: 2.40,
-        result: 'won'
-      },
-      forecaster: {
-        id: '103',
-        name: 'Carlos Ruiz',
-        avatar: 'assets/avatars/carlos-ruiz.jpg'
-      },
-      followers: 35,
-      createdAt: new Date('2023-11-16'),
-      settledAt: new Date('2023-11-19')
-    },
-    {
-      id: '4',
-      match: {
-        homeTeam: 'PSG',
-        awayTeam: 'Marseille',
-        score: '2-1',
-        date: new Date('2023-11-26'),
-        league: 'Ligue 1'
-      },
-      forecast: {
-        type: '1X2',
-        selection: '1 (Local)',
-        odds: 1.75,
-        result: 'pending'
-      },
-      forecaster: {
-        id: '104',
-        name: 'Lucía Martín',
-        avatar: 'assets/avatars/lucia-martin.jpg'
-      },
-      followers: 19,
-      createdAt: new Date('2023-11-24')
-    }
-  ];
+  
+  filtersForm: FormGroup;
+  filteredBets: Bet[] = [];
+  uniqueForecasters: string[] = [];
+    bets: Bet[] = []; // puedes cargar desde el back o usar mocks
 
-  filteredBets: BetHistory[] = [];
-  selectedResult: string = 'all';
-  sortBy: string = 'newest';
+  constructor(private dialog: MatDialog, private betService: BetsService, private fb: FormBuilder) {
+    this.filtersForm = this.fb.group({
+    forecaster: [''],
+    status: [''],
+    sort: ['']
+  });
+  }
+
+
 
   ngOnInit() {
-    this.filterBets();
-  }
-
-  filterBets() {
-    this.filteredBets = this.bets.filter(bet => {
-      if (this.selectedResult === 'all') return true;
-      return bet.forecast.result === this.selectedResult;
-    });
-    this.sortBets();
-  }
-
-  sortBets() {
-    this.filteredBets.sort((a, b) => {
-      switch (this.sortBy) {
-        case 'newest':
-          return b.createdAt.getTime() - a.createdAt.getTime();
-        case 'oldest':
-          return a.createdAt.getTime() - b.createdAt.getTime();
-        case 'highest-odds':
-          return b.forecast.odds - a.forecast.odds;
-        case 'most-followers':
-          return b.followers - a.followers;
-        default:
-          return 0;
+    const userId = '664be8a4ef7b8d7b97b28cc3'; // Id insertado manualmente para pruebas
+    this.betService.getBets(userId).subscribe({
+      next: (data) => {
+        console.log('Apuestas recibidas:', data)
+        this.bets = data;
+        this.uniqueForecasters = [...new Set(data.map(b => b.forecaster.name))];
+        this.filteredBets = [...this.bets];
+      },
+      error: (err) => {
+        console.error('Error cargando apuestas', err);
       }
     });
   }
 
-  getResultText(result: string): string {
-    switch (result) {
-      case 'won': return 'Ganada';
-      case 'lost': return 'Perdida';
-      case 'pending': return 'Pendiente';
-      default: return '';
+  applyFilters() {
+  const { forecaster, status, sort } = this.filtersForm.value;
+
+  this.filteredBets = this.bets.filter(bet => {
+    const matchesForecaster = !forecaster || bet.forecaster.name === forecaster;
+    const matchesStatus = !status || this.getBetStatus(bet) === status;
+    return matchesForecaster && matchesStatus;
+  });
+
+  if (sort) {
+    switch (sort) {
+      case 'price':
+        this.filteredBets.sort((a, b) => b.price - a.price);
+        break;
+      case 'odds':
+        this.filteredBets.sort((a, b) => {
+          const avgA = this.averageOdds(a);
+          const avgB = this.averageOdds(b);
+          return avgB - avgA;
+        });
+        break;
+      case 'date':
+        this.filteredBets.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+        break;
     }
   }
+}
+
+averageOdds(bet: Bet): number {
+  const totalOdds = bet.matches.reduce((sum, match) => sum + (match.forecast.odds || 0), 0);
+  return bet.matches.length ? totalOdds / bet.matches.length : 0;
+}
+
+  openDetails(bet: Bet): void {
+    this.dialog.open(BetDetailsDialogComponent, {
+      data: { bet },
+      width: '600px'
+    });
+  }
+
+  countByStatus(status: string): number {
+    return this.bets.filter(bet => bet.status === status).length;
+  }
+
+
+
+
+capitalize(str?: string): string {
+    return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+  }
+
+  getBetStatus(bet: Bet): string {
+    return this.capitalize(bet.status);
+  }
+
+
+  getStatusClass(status: string): string {
+  switch (status.toLowerCase()) {
+    case 'ganada': return 'status-ganada';
+    case 'perdida': return 'status-perdida';
+    case 'pendiente': return 'status-pendiente';
+    case 'cancelada': return 'status-cancelada';
+    case 'anulada': return 'status-anulada';
+    default: return '';
+  }
+}
+
+
 }

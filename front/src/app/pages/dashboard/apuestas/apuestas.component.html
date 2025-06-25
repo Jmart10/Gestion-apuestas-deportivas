@@ -75,12 +75,6 @@
     </mat-card>
   </div>
 
-  <div *ngIf="filteredBets.length === 0" class="no-bets">
-    <mat-icon>sports_soccer</mat-icon>
-    <h3>No hay apuestas disponibles</h3>
-    <p>Intenta ajustar los filtros o vuelve más tarde</p>
-  </div>
-</div>
 
 
 <div class="modal-overlay" *ngIf="selectedBet" (click)="closeModal()">

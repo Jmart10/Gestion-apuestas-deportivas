@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>Partidos de la Apuesta</h2>
+<mat-dialog-content>
+
+  <mat-table [dataSource]="data.bet.matches" class="mat-elevation-z1">
+
+    <!-- Equipos -->
+    <ng-container matColumnDef="teams">
+      <mat-header-cell *matHeaderCellDef>Equipos</mat-header-cell>
+      <mat-cell *matCellDef="let match">{{ match.homeTeam }} vs {{ match.awayTeam }}</mat-cell>
+    </ng-container>
+
+    <!-- Liga -->
+    <ng-container matColumnDef="league">
+      <mat-header-cell *matHeaderCellDef>Liga</mat-header-cell>
+      <mat-cell *matCellDef="let match">{{ match.league }}</mat-cell>
+    </ng-container>
+
+    <!-- Fecha -->
+    <ng-container matColumnDef="date">
+      <mat-header-cell *matHeaderCellDef>Fecha</mat-header-cell>
+      <mat-cell *matCellDef="let match">{{ match.date | date:'dd/MM/yyyy' }}</mat-cell>
+    </ng-container>
+
+    <!-- Pronóstico -->
+    <ng-container matColumnDef="forecast">
+      <mat-header-cell *matHeaderCellDef>Pronóstico</mat-header-cell>
+      <mat-cell *matCellDef="let match">
+        {{ match.forecast.selection }} ({{ match.forecast.odds }})
+      </mat-cell>
+    </ng-container>
+
+    <!-- Estado -->
+    <ng-container matColumnDef="status">
+      <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+      <mat-cell *matCellDef="let match">
+        <span class="status-badge status-{{ match.status }}">
+            {{ match.status }}
+        </span>
+    </mat-cell>
+
+    </ng-container>
+
+    <!-- Fila -->
+    <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: columns"></mat-row>
+
+  </mat-table>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

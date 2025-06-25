@@ -46,7 +46,8 @@ export class BetDialogComponent implements OnInit {
     this.betForm = this.fb.group({
       bets: this.fb.array([]),
       price: [null, [Validators.required, Validators.min(0)]],
-      forecasterId: ['', Validators.required]
+      forecasterId: ['', Validators.required],
+      status: ['pendiente', Validators.required] 
     });
     if (!this.data.isEdit) {
       this.addBet();
@@ -68,7 +69,8 @@ ngOnInit(): void {
 
     this.betForm.patchValue({
       price: this.data.bet.price,
-      forecasterId: this.data.bet.forecaster.id
+      forecasterId: this.data.bet.forecaster.id,
+      status: this.data.bet.status || 'pendiente'
     });
   }
 }
@@ -85,8 +87,7 @@ ngOnInit(): void {
       league: [betData?.league || '', Validators.required],
       matchDate: [betData?.matchDate || '', Validators.required],
       odds: [betData?.odds || null, [Validators.required, Validators.min(1)]],
-      forecastSelection: [betData?.forecastSelection || '', Validators.required],
-      status: [betData?.status || 'Pendiente', Validators.required]
+      forecastSelection: [betData?.forecastSelection || '', Validators.required]
     }));
   }
 
@@ -104,7 +105,6 @@ onSubmit(): void {
       awayTeam: b.awayTeam,
       date: b.matchDate,
       league: b.league,
-      status: b.status,
       history: {
         lastMatches: [],
         h2h: { homeWins: 0, awayWins: 0, draws: 0 }
@@ -120,6 +120,7 @@ onSubmit(): void {
       id: this.data.isEdit && this.data.bet ? this.data.bet.id || this.data.bet._id : this.generateId(),
       matches,
       price: formValue.price,
+      status: formValue.status,
       createdAt: this.data.isEdit && this.data.bet ? this.data.bet.createdAt : new Date(),
       forecaster: {
         id: formValue.forecasterId,
