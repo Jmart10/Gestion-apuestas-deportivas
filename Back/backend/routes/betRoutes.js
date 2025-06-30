@@ -3,6 +3,7 @@ const router = express.Router();
 const betController = require('../controllers/betController');
 
 router.get('/', betController.getAllBets);
+router.get('/all', betController.getAllBetsForAllUsers);
 
 router.post('/', betController.createBet);
 router.put('/:id', betController.updateBet);

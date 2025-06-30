@@ -40,6 +40,12 @@ export class UserFormComponent {
     { value: 'suspended', label: 'Suspendido' }
   ];
 
+  userTypes = [
+    {value: 'admin', label: 'Administrador'},
+    {value: 'Normal', label: 'Normal'},
+    {value: 'Premium', label: 'Premium'},
+    {value: 'Super', label: 'Super Administrador'}
+  ]
 
   userForm: FormGroup;
 
@@ -52,7 +58,8 @@ export class UserFormComponent {
       lastPaymentDate: [null],
       lastPaymentAmount: [null],
       betsCreated: [0, [Validators.required, Validators.min(0)]],
-      avatar: ['']
+      avatar: [''],
+      password: ['']
     });
   }
 
@@ -60,17 +67,28 @@ export class UserFormComponent {
 
   ngOnChanges() {
     if (this.user) {
+      this.userForm.get('email')?.disable();
       this.userForm.patchValue({
         ...this.user,
         lastPaymentDate: this.user.lastPayment?.date || null,
-        lastPaymentAmount: this.user.lastPayment?.amount || null
+        lastPaymentAmount: this.user.lastPayment?.amount || null,
+        password: ''
       });
+
+      // Al editar, quitamos validadores de la contraseña
+      this.userForm.get('password')?.clearValidators();
+      this.userForm.get('password')?.updateValueAndValidity();
+    }else{
+      // Al crear, la contraseña es obligatoria
+      this.userForm.get('password')?.setValidators([Validators.required, Validators.minLength(6)]);
+      this.userForm.get('password')?.updateValueAndValidity();
     }
   }
 
   onSubmit() {
     if (this.userForm.valid) {
       const formValue = this.userForm.value;
+
       const userData: User = {
         id: this.user?.id || this.generateId(),
         name: formValue.name!,
@@ -84,7 +102,8 @@ export class UserFormComponent {
             date: formValue.lastPaymentDate,
             amount: formValue.lastPaymentAmount
           }
-        } : {})
+        } : {}),
+        ...(formValue.password?.trim() ? { password: formValue.password } : {})
       };
       this.save.emit(userData);
     }

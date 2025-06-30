@@ -26,8 +26,7 @@ import { MatDividerModule } from '@angular/material/divider';
 export class BetsListComponent implements OnInit {
   bets: Bet[] = [];
   filteredBets: Bet[] = [];
-  userId = '664be8a4ef7b8d7b97b28cc3'; //Id insertado manualmente para pruebas
-
+  userId = localStorage.getItem('userId') || '';
   constructor(private dialog: MatDialog, private betsService: BetsService) {}
 
   ngOnInit() {

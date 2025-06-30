@@ -1,5 +1,5 @@
 <div class="recent-bets-card">
-  <h3>Últimas 5 apuestas</h3>
+  <h3>Últimas 5 apuestas hechas por mí</h3>
   <div class="bets-list">
     <div class="bet-item" *ngFor="let bet of recentBets">
       <div class="bet-info">
@@ -7,7 +7,7 @@
         <span class="bet-date">{{bet.date | date:'shortDate'}}</span>
       </div>
       <div class="bet-result" [class.won]="bet.result === 'won'" [class.lost]="bet.result === 'lost'" [class.pending]="bet.result === 'pending'">
-        {{bet.result === 'won' ? 'Ganada' : bet.result === 'lost' ? 'Perdida' : 'Pendiente'}}
+        {{bet.result === 'won' ? 'Ganada' : bet.result === 'lost' ? 'Perdida' : 'Nada'}}
       </div>
       <div class="bet-amount">{{bet.amount}}</div>
     </div>

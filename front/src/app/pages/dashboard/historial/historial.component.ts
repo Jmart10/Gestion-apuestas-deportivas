@@ -12,6 +12,7 @@ import { MatTableModule } from '@angular/material/table';
 import { BetsService } from '../../../core/services/bets.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-historial',
@@ -22,7 +23,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatIconModule,
     MatDialogModule,
     MatTableModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatCheckboxModule
   ],
   templateUrl: './historial.component.html',
   styleUrl: './historial.component.css',
@@ -34,32 +36,39 @@ export class BetHistoryComponent {
   filtersForm: FormGroup;
   filteredBets: Bet[] = [];
   uniqueForecasters: string[] = [];
-    bets: Bet[] = []; // puedes cargar desde el back o usar mocks
+    bets: Bet[] = [];
+    userId: string = '';
+
 
   constructor(private dialog: MatDialog, private betService: BetsService, private fb: FormBuilder) {
     this.filtersForm = this.fb.group({
     forecaster: [''],
     status: [''],
-    sort: ['']
+    sort: [''],
+    onlyMine: [false]
   });
   }
 
 
 
-  ngOnInit() {
-    const userId = '664be8a4ef7b8d7b97b28cc3'; // Id insertado manualmente para pruebas
-    this.betService.getBets(userId).subscribe({
-      next: (data) => {
-        console.log('Apuestas recibidas:', data)
-        this.bets = data;
-        this.uniqueForecasters = [...new Set(data.map(b => b.forecaster.name))];
-        this.filteredBets = [...this.bets];
-      },
-      error: (err) => {
-        console.error('Error cargando apuestas', err);
-      }
-    });
-  }
+ngOnInit() {
+  this.userId = localStorage.getItem('userId') || '';
+  this.betService.getAllBets().subscribe({
+    next: (bets: Bet[]) => {
+      this.bets = bets;
+
+      this.uniqueForecasters = [
+        ...new Set(bets.map(b => b.forecaster.name))
+      ];
+
+      this.filteredBets = [...bets];
+    },
+    error: (err) => {
+      console.error('Error cargando apuestas', err);
+    }
+  });
+}
+
 
   applyFilters() {
   const { forecaster, status, sort } = this.filtersForm.value;
@@ -67,7 +76,9 @@ export class BetHistoryComponent {
   this.filteredBets = this.bets.filter(bet => {
     const matchesForecaster = !forecaster || bet.forecaster.name === forecaster;
     const matchesStatus = !status || this.getBetStatus(bet) === status;
-    return matchesForecaster && matchesStatus;
+    const matchesUser = !this.filtersForm.value.onlyMine || bet.userId === this.userId;
+
+    return matchesForecaster && matchesStatus && matchesUser;
   });
 
   if (sort) {

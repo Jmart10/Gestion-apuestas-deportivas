@@ -9,16 +9,10 @@
   <div class="users-content">
     <app-user-list 
       [users]="users" 
-      (select)="selectUser($event)"
       (edit)="editUser($event)"
       (delete)="deleteUser($event)">
     </app-user-list>
 
-    <!-- <app-user-detail 
-      *ngIf="selectedUser" 
-      [user]="selectedUser"
-      (edit)="editUser(selectedUser)">
-    </app-user-detail> -->
     
   </div>
 

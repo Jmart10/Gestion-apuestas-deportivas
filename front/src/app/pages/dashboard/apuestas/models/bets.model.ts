@@ -1,6 +1,7 @@
 export interface Bet {
   id?: string;
   _id?: string;
+  userId: string;
 
   matches: {
     homeTeam: string;

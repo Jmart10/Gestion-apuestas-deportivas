@@ -116,8 +116,14 @@ onSubmit(): void {
       }
     }));
 
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      console.error('User ID not found in local storage');
+      return;
+    }
     const bet: Bet = {
       id: this.data.isEdit && this.data.bet ? this.data.bet.id || this.data.bet._id : this.generateId(),
+      userId: userId || '',
       matches,
       price: formValue.price,
       status: formValue.status,

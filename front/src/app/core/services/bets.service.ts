@@ -29,4 +29,10 @@ export class BetsService {
   deleteBet(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
+
+  getAllBets(): Observable<Bet[]> {
+    return this.http.get<Bet[]>('http://localhost:3001/api/bets/all')
+      .pipe(map(bets => bets.map(b => ({ ...b, id: b.id || (b as any)._id }))));
+  }
+
 }

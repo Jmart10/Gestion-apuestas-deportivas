@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MetricCardComponent } from './components/metric-card/metric-card.component';
 import { RecentBetsComponent } from './components/recent-bets/recent-bets.component';
 import { PerformanceChartComponent } from './components/performance-charts/performance-chart.component';
 import { Bet } from '../../../core/models/bet.model';
+import { DashboardService } from '../../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-inicio',
@@ -18,23 +19,43 @@ import { Bet } from '../../../core/models/bet.model';
     PerformanceChartComponent
   ]
 })
-export class InicioComponent {
-  userName = 'Alex Fernández';
+export class InicioComponent implements OnInit {
+  userName = '';
+  betsPlaced = 0;
+  betsChange = 0;
+  betsFollowed = 0;
+  followedChange = 0;
+  betsCreated = 0;
+  createdChange = 0;
+  hitRate = 0;
+  hitRateChange = 0;
+  recentBets: Bet[] = [];
 
-  betsPlaced = 42;
-  betsChange = 12.5;
-  betsFollowed = 18;
-  followedChange = -3.2;
-  betsCreated = 7;
-  createdChange = 25;
-  hitRate = 68.3;
-  hitRateChange = 4.2;
+  constructor(private dashboardService: DashboardService) {}
 
-  recentBets: Bet[] = [
-    { title: 'Junior Vs Medellín', date: new Date(), result: 'won', amount: 2.16 },
-    { title: 'Colombia Vs Argentina', date: new Date(Date.now() - 86400000), result: 'lost', amount: 2.10 },
-    { title: 'Brasil Vs Paraguay', date: new Date(Date.now() - 172800000), result: 'pending', amount: 2.00 },
-    { title: 'Millonarios Vs Nacional', date: new Date(Date.now() - 259200000), result: 'won', amount: 1.80 },
-    { title: 'América Vs Tolima', date: new Date(Date.now() - 345600000), result: 'lost', amount: 2.50 }
-  ];
+  performanceData: number[] = [];
+  performanceLabels: string[] = [];
+
+  ngOnInit() {
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+      this.dashboardService.getUserStats(userId).subscribe(stats => {
+        this.userName = stats.userName || '';
+        this.betsPlaced = stats.betsPlaced || 0;
+        this.betsChange = stats.betsChange || 0;
+        this.betsFollowed = stats.betsFollowed || 0;
+        this.followedChange = stats.followedChange || 0;
+        this.betsCreated = stats.betsCreated || 0;
+        this.createdChange = stats.createdChange || 0;
+        this.hitRate = stats.hitRate || 0;
+        this.hitRateChange = stats.hitRateChange || 0;
+        this.recentBets = stats.recentBets || [];
+      });
+      this.dashboardService.getPerformanceData(userId).subscribe(res => {
+        this.performanceData = res.performance;
+        this.performanceLabels = res.labels;
+      });
+    }
+  }
 }
+

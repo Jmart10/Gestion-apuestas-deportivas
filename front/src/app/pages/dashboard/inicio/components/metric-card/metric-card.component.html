@@ -3,7 +3,7 @@
     <div class="metric-icon">{{icon}}</div>
     <div class="metric-info">
       <h3>{{title}}</h3>
-      <p class="metric-value">{{value}}{{unit === '%' ? unit : ''}}</p>
+      <p class="metric-value">{{value}}{{unit === '' ? unit : ''}}</p>
       <p class="metric-change" [class.positive]="change >= 0" [class.negative]="change < 0">
         {{change >= 0 ? '+' : ''}}{{change}}{{unit}} vs último mes
       </p>

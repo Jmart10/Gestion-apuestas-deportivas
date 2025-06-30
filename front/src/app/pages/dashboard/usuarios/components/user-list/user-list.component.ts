@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { User } from '../../models/user.model';
 import { CommonModule } from '@angular/common';
 import { DatePipe } from '@angular/common';
@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableDataSource } from '@angular/material/table';
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
@@ -37,27 +38,19 @@ export class UserListComponent {
   @Output() delete = new EventEmitter<string>();
 
   displayedColumns: string[] = ['avatar', 'name', 'status', 'createdAt', 'lastPayment', 'betsCreated', 'actions'];
-  filteredUsers: User[] = [];
+  filteredUsers = new MatTableDataSource<User>([]);
     selectedUserId: string | null = null; 
 
-  ngOnInit() {
-    this.filteredUsers = [...this.users];
+  ngOnChanges() {
+    // Se actualiza el dataSource cuando cambian los usuarios
+    this.filteredUsers = new MatTableDataSource(this.users);
   }
 
   // Método para filtrar por texto
   applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
-    this.filteredUsers = this.users.filter(user => 
-      user.name.toLowerCase().includes(filterValue) || 
-      user.email.toLowerCase().includes(filterValue)
-  )}
-
-  // Método para filtrar por estado
-  filterByStatus(status: string) {
-    if (status === 'all') {
-      this.filteredUsers = [...this.users];
-    } else {
-      this.filteredUsers = this.users.filter(user => user.status === status);
-    }
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    this.filteredUsers.filter = filterValue;
   }
+
+
 }

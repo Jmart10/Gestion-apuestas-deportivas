@@ -7,12 +7,13 @@
   <div class="metrics-grid">
     <app-metric-card icon="🎯" title="Apuestas Hechas" [value]="betsPlaced" [change]="betsChange" unit="%"></app-metric-card>
     <app-metric-card icon="👥" title="Apuestas Seguidas" [value]="betsFollowed" [change]="followedChange" unit="%"></app-metric-card>
-    <app-metric-card icon="✨" title="Apuestas Creadas" [value]="betsCreated" [change]="createdChange" unit="%"></app-metric-card>
+    <app-metric-card icon="✨" title="Apuestas mias" [value]="betsCreated" [change]="createdChange" unit="%"></app-metric-card>
     <app-metric-card icon="📊" title="Tasa de Aciertos" [value]="hitRate" [change]="hitRateChange" unit="pts"></app-metric-card>
   </div>
 
   <div class="content-grid">
-    <app-performance-chart></app-performance-chart>
+<app-performance-chart [data]="performanceData" [labels]="performanceLabels"></app-performance-chart>
+
     <app-recent-bets [recentBets]="recentBets"></app-recent-bets>
   </div>
 </div>

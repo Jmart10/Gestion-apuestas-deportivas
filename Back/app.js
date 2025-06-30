@@ -8,6 +8,8 @@ const userRoutes = require('./backend/routes/userRoutes.js');
 
 const betRoutes = require('./backend/routes/betRoutes.js');
 
+const dashboardRoutes = require('./backend/routes/dashboardRoutes');
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -22,6 +24,7 @@ app.get('/', (req, res) => {
 // Rutas
 app.use('/api', userRoutes);
 app.use('/api/bets', betRoutes);
+app.use('/api/', dashboardRoutes);
 
 const dbURI = process.env.MONGODB_URI;
 console.log('Conectando a la base de datos:', dbURI);

@@ -1,9 +1,17 @@
 const generateToken = require('../helpers/token.js');
 const usuario = require('../models/users.js');
+const bcrypt = require('bcrypt')
 
 exports.createUser = async (req, res) => {
     try {
-        const newUser = new usuario(req.body);
+        const { password, ...rest} = req.body;
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = new usuario({
+            ...rest,
+            password: hashedPassword
+        });
         const userSaved = await newUser.save();
         res.status(201).json({
             message: 'Usuario creado con éxito',
@@ -19,19 +27,32 @@ exports.createUser = async (req, res) => {
 };
 
 exports.getUsers = async (req, res) => {
-    try {
-        const users = await usuario.find();
-        res.status(200).json({
-            message: 'Usuarios obtenidos con éxito',
-            users,
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: 'Error al obtener los usuarios',
-            error: error.message,
-        });
-    }
+  try {
+    const users = await usuario.find();
+
+    const formattedUsers = users.map(u => ({
+      id: u._id,
+      name: u.name || '(Sin nombre)',
+      email: u.email,
+      status: u.status || 'inactive',
+      createdAt: u.createdAt || new Date(),
+      betsCreated: u.betsCreated ?? 0,
+      avatar: u.avatar || '',
+      lastPayment: u.lastPayment || null
+    }));
+
+    res.status(200).json({
+      message: 'Usuarios obtenidos con éxito',
+      users: formattedUsers
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Error al obtener los usuarios',
+      error: error.message
+    });
+  }
 };
+
 
 exports.getUserById = async (req, res) => {
     try {
@@ -55,7 +76,18 @@ exports.getUserById = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
     try {
-        const userUpdated = await usuario.findByIdAndUpdate(req.params.id, req.body, {
+
+        const updates = { ...req.body};
+
+        if (updates.password === '') {
+            delete updates.password;
+        }
+
+        if (updates.password) {
+            updates.password = await bcrypt.hash(updates.password, 10);
+        }
+
+        const userUpdated = await usuario.findByIdAndUpdate(req.params.id, updates, {
             new: true,
             runValidators: true,
         });
@@ -110,9 +142,9 @@ exports.loginUser = async (req, res) => {
     }
 
     // Comparar contraseña directamente (solo para pruebas)
-    if (user.password !== password) {
-      return res.status(401).json({ message: 'Correo o contraseña incorrectos' });
-    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).json({ message: 'Correo o contraseña incorrectos' });
+
     const token = generateToken(user);
     // Éxito
     res.status(200).json({

@@ -29,6 +29,14 @@
               Ingrese un email válido
             </div>
           </div>
+          <div class="form-control">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" formControlName="password" placeholder="••••••••" />
+              <div class="error" *ngIf="userForm.get('password')?.touched && userForm.get('password')?.invalid">
+                  <span *ngIf="userForm.get('password')?.errors?.['required']">La contraseña es obligatoria.</span>
+                  <span *ngIf="userForm.get('password')?.errors?.['minlength']">Mínimo 6 caracteres.</span>
+              </div>
+          </div>
 
           <div class="form-control">
             <label>Estado</label>
@@ -45,21 +53,13 @@
       <div class="form-section">
         <h3 class="section-title">Detalles Adicionales</h3>
         <div class="form-row">
-          <div class="form-control">
+          <div class="form-control" *ngIf="isEditing">
             <label>Fecha de Registro</label>
             <input type="date" formControlName="createdAt" readonly />
           </div>
 
           <div class="form-control">
-            <label>Apuestas Creadas</label>
-            <input type="number" formControlName="betsCreated" min="0" />
-            <div class="error" *ngIf="userForm.get('betsCreated')?.hasError('min')">
-              El valor mínimo es 0
-            </div>
-          </div>
-
-          <div class="form-control">
-            <label>URL Avatar (opcional)</label>
+            <label>URL Foto perfil (opcional)</label>
             <input type="text" formControlName="avatar" />
           </div>
         </div>

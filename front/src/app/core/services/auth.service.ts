@@ -10,7 +10,12 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   login(credentials: { email: string; password: string }): Observable<any> {
-    return this.http.post<{ message: string; user: any }>(this.apiUrl, credentials);
+    return this.http.post<{ token: string; user: any }>(this.apiUrl, credentials).pipe(
+      tap(response => {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('userId', response.user.id);
+      })
+    );
   }
 
   logout() {

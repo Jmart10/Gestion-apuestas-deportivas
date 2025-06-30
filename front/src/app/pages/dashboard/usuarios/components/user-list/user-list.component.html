@@ -1,7 +1,7 @@
 <div class="user-list-container">
   <!-- Header con título y controles -->
   <div class="list-header">
-    <h2 class="list-title">Gestión de Usuarios</h2>
+
     
     <div class="action-bar">
       <mat-form-field appearance="outline" floatLabel="always" class="search-field">
@@ -10,10 +10,6 @@
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
 
-      <button mat-stroked-button (click)="filterByStatus('all')" class="filter-btn">
-        <mat-icon>refresh</mat-icon>
-        Resetear
-      </button>
     </div>
   </div>
 
@@ -123,12 +119,7 @@
   </div>
 
   <!-- Paginación -->
-  <mat-paginator [length]="filteredUsers.length"
-                 [pageSize]="10"
-                 [pageSizeOptions]="[5, 10, 25]"
-                 aria-label="Select page"
-                 class="custom-paginator">
-  </mat-paginator>
+
 
 
 </div>
