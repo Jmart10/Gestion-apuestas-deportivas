@@ -1,0 +1,36 @@
+<div class="modal-backdrop" *ngIf="visible">
+  <div class="modal">
+    <h3>{{ isEdit ? 'Editar' : 'Agregar' }} Pronosticador</h3>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <input formControlName="name" placeholder="Nombre" required />
+      <input formControlName="telegramChannel" placeholder="Canal de Telegram" />
+
+      <label>Deporte</label>
+      <select formControlName="sport">
+        <option value=""disabled  >Selecciona un deporte</option>
+        <option value="fútbol">Fútbol</option>
+        <option value="baloncesto">Baloncesto</option>
+        <option value="tenis">Tenis</option>
+        <option value="béisbol">Béisbol</option>
+      </select>
+
+
+      <label>
+        <input type="checkbox" formControlName="isPremium" />
+        ¿Premium?
+      </label>
+
+      <label>Estado</label>
+      <select formControlName="status">
+        <option value="activo">Activo</option>
+        <option value="inactivo">Inactivo</option>
+      </select>
+
+      <div class="modal-actions">
+        <button class="custom-btn" type="submit">Guardar</button>
+        <button class="btn" type="button" (click)="onCancel()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -10,5 +10,5 @@ export class MetricCardComponent {
   @Input() title = '';
   @Input() value!: number;
   @Input() change!: number;
-  @Input() unit = ''; // '%' o 'pts'
+  @Input() unit = '';
 }

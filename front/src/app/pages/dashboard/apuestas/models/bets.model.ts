@@ -25,7 +25,7 @@ export interface Bet {
       selection: string;
       odds: number;
     };
-  }[]; // 👈 Array de partidos
+  }[];
 
   forecaster: {
     id: string;

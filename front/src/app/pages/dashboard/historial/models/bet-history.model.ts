@@ -3,7 +3,7 @@ export interface BetHistory {
   match: {
     homeTeam: string;
     awayTeam: string;
-    score: string; // Ej: "2-1"
+    score: string;
     date: Date;
     league: string;
   };

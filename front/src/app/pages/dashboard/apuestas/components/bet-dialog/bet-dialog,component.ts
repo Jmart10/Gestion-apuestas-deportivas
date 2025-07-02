@@ -140,7 +140,7 @@ onSubmit(): void {
       }
     };
 
-    this.dialogRef.close(bet); // Ahora se envía un solo objeto Bet con múltiples partidos
+    this.dialogRef.close(bet);
   }
 }
   private generateId(): string {

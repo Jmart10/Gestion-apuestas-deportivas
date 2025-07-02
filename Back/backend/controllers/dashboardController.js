@@ -38,9 +38,9 @@ exports.getUserStats = async (req, res) => {
     const stats = {
       userName: user.name || 'Usuario',
       betsPlaced,
-      betsChange: 12.5, // reemplazar con lógica si tienes histórico
+      betsChange: 12.5,
       betsFollowed,
-      followedChange: -3.2, // reemplazar si aplica
+      followedChange: -3.2,
       betsCreated,
       createdChange: 25,
       hitRate: hitRate.toFixed(2),
@@ -101,7 +101,7 @@ exports.getPerformanceData = async (req, res) => {
       day: '2-digit',
       month: 'short'
     });
-    return formatted; // ej: "26 jun"
+    return formatted;
   });
 
   res.status(200).json({

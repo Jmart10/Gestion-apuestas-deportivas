@@ -29,13 +29,7 @@ export class LoginComponent {
       this.loginForm.markAllAsTouched();
       return;
     }
-    /*
-     // 💡 PRUEBA DE CONEXIÓN AL BACK
-  this.authService.testConnection().subscribe({
-    next: (res) => console.log('✅ Conexión exitosa con el backend:', res),
-    error: (err) => console.error('❌ Error al conectar con el backend:', err)
-  });
-  */
+
     this.loading = true;
     this.errorMessage = null;
 

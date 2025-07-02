@@ -37,7 +37,7 @@ export class BetsListComponent implements OnInit {
     this.betsService.getBets(this.userId).subscribe(bets => {
       this.bets = bets.map(b => ({
         ...b,
-        id: b.id || (b as any)._id // Normaliza el id si solo llega _id
+        id: b.id || (b as any)._id
       }));
       this.filteredBets = [...this.bets];
     });

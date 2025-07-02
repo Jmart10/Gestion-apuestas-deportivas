@@ -1,0 +1,65 @@
+<!-- Filtros (puedes expandir estos filtros según tu necesidad) -->
+<form [formGroup]="filtersForm" (ngSubmit)="applyFilters()" class="filters-container">
+  <div class="custom-field">
+    <label for="status">Estado</label>
+    <select id="status" formControlName="status">
+      <option value="">Todos</option>
+      <option value="activo">Activo</option>
+      <option value="inactivo">Inactivo</option>
+    </select>
+  </div>
+
+  <button type="submit" class="custom-btn">Aplicar Filtros</button>
+</form>
+
+<!-- Botón de agregar -->
+<div style="margin-bottom: 1rem;">
+  <button class="custom-btn" (click)="openCreateModal()">Agregar Pronosticador</button>
+</div>
+
+<!-- Tabla -->
+<div class="table-container">
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Telegram</th>
+        <th>Deportes</th>
+        <th>Premium</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let f of filteredForecasters">
+        <td>{{ f.name }}</td>
+        <td>{{ f.telegramChannel }}</td>
+        <td>{{ f.sport.join(', ') }}</td>
+        <td>{{ f.isPremium ? 'Sí' : 'No' }}</td>
+        <td>
+          <span class="status-badge" [ngClass]="{
+            'status-ganada': f.status === 'activo',
+            'status-perdida': f.status === 'inactivo'
+          }">
+            {{ f.status }}
+          </span>
+        </td>
+        <td>
+          <button class="btn small" (click)="edit(f)">Editar</button>
+          <button class="btn small danger" (click)="toggleStatus(f)">
+            {{ f.status === 'activo' ? 'Desactivar' : 'Activar' }}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<app-forecaster-form-modal
+  [visible]="showModal"
+  [isEdit]="isEdit"
+  [forecaster]="selectedForecaster"
+  (save)="handleSave($event)"
+  (cancel)="cancel()">
+</app-forecaster-form-modal>
+

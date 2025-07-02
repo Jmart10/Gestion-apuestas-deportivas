@@ -7,6 +7,7 @@ import { InicioComponent } from './pages/dashboard/inicio/inicio.component';
 import { UsuariosComponent } from './pages/dashboard/usuarios/usuarios.component';
 import { BetsListComponent } from './pages/dashboard/apuestas/components/bets-list/bets-list.component';
 import { BetHistoryComponent } from './pages/dashboard/historial/historial.component';
+import { AdminForecastersComponent } from './pages/dashboard/pronosticadores/admin-forecaster.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -24,7 +25,8 @@ export const routes: Routes = [
       { path: '', component: InicioComponent },
       { path: 'usuarios', component: UsuariosComponent },
       { path: 'apuestas', component: BetsListComponent },
-      { path: 'historial', component: BetHistoryComponent }
+      { path: 'historial', component: BetHistoryComponent },
+      { path: 'pronosticadores', component: AdminForecastersComponent }
     ]
   },
 

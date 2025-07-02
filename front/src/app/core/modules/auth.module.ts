@@ -10,7 +10,7 @@ import { LoginComponent } from '../../pages/login/login.component';
     CommonModule,
     ReactiveFormsModule
   ],
-  providers: [  // 👈 Aquí dentro
+  providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
